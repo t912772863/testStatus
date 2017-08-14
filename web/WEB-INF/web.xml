@@ -21,11 +21,6 @@
         <servlet-class>com.test.teststatus.servlet.InitServlet</servlet-class>
         <load-on-startup>2</load-on-startup>
     </servlet>
-    <servlet>
-        <servlet-name>statusServlet</servlet-name>
-        <servlet-class>com.test.teststatus.StatusServlet</servlet-class>
-    </servlet>
-
 
 
 
@@ -38,10 +33,6 @@
     <servlet-mapping>
         <servlet-name>proxoolServletConfigurator</servlet-name>
         <url-pattern>/proxoolServletConfigurator</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>statusServlet</servlet-name>
-        <url-pattern>/statusServlet</url-pattern>
     </servlet-mapping>
 
 
