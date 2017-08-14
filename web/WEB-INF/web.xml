@@ -4,11 +4,41 @@
          xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
          version="3.1">
 
+
+    <!--加载数据库连接池servlet-->
+    <servlet>
+        <servlet-name>proxoolServletConfigurator</servlet-name>
+        <servlet-class>org.logicalcobwebs.proxool.configuration.ServletConfigurator</servlet-class>
+        <init-param>
+            <param-name>xmlFile</param-name>
+            <param-value>WEB-INF/classes/proxool.xml</param-value>
+        </init-param>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <!--初始化servlet-->
+    <servlet>
+        <servlet-name>initServlet</servlet-name>
+        <servlet-class>com.test.teststatus.servlet.InitServlet</servlet-class>
+        <load-on-startup>2</load-on-startup>
+    </servlet>
     <servlet>
         <servlet-name>statusServlet</servlet-name>
         <servlet-class>com.test.teststatus.StatusServlet</servlet-class>
     </servlet>
-    
+
+
+
+
+
+
+    <servlet-mapping>
+        <servlet-name>initServlet</servlet-name>
+        <url-pattern>/initServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>proxoolServletConfigurator</servlet-name>
+        <url-pattern>/proxoolServletConfigurator</url-pattern>
+    </servlet-mapping>
     <servlet-mapping>
         <servlet-name>statusServlet</servlet-name>
         <url-pattern>/statusServlet</url-pattern>

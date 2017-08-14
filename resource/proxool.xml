@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<something-else-entirely>
+
+<proxool>
+	<alias>localmysql</alias>
+	<driver-url>jdbc:mysql://localhost:3306/springmvc_mybatis</driver-url>
+	<driver-class>com.mysql.jdbc.Driver</driver-class>
+	<driver-properties>
+		<property name="user" value="root" />
+		<property name="password" value="06220724" />
+	</driver-properties>
+	<maximum-connection-lifetime>600000</maximum-connection-lifetime>
+	<minimum-connection-count>1</minimum-connection-count>
+	<maximum-connection-count>20</maximum-connection-count>
+	<house-keeping-test-sql>select CURRENT_DATE FROM dual</house-keeping-test-sql>
+</proxool>
+
+</something-else-entirely>
