@@ -8,9 +8,9 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
   <head>
-    <title>$Title$</title>
+    <title>$testStatus首页$</title>
   </head>
   <body>
-  $END$
+  欢迎来到testStatus项目首页, 当前登录人是...
   </body>
 </html>

@@ -21,6 +21,10 @@
         <servlet-class>com.test.teststatus.servlet.InitServlet</servlet-class>
         <load-on-startup>2</load-on-startup>
     </servlet>
+    <servlet>
+        <servlet-name>doServlet</servlet-name>
+        <servlet-class>com.test.teststatus.servlet.DoServlet</servlet-class>
+    </servlet>
 
 
 
@@ -28,13 +32,31 @@
 
     <servlet-mapping>
         <servlet-name>initServlet</servlet-name>
-        <url-pattern>/initServlet</url-pattern>
+        <url-pattern>/index</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>proxoolServletConfigurator</servlet-name>
         <url-pattern>/proxoolServletConfigurator</url-pattern>
     </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>doServlet</servlet-name>
+        <url-pattern>/do</url-pattern>
+    </servlet-mapping>
 
 
+    <!--拦截器相关配置-->
+    <filter>
+        <filter-name>loginFilter</filter-name>
+        <filter-class>com.test.teststatus.filter.LoginFilter</filter-class>
+        <init-param>
+            <param-name>Site</param-name>
+            <param-value>菜鸟教程</param-value>
+        </init-param>
+    </filter>
+    <filter-mapping>
+        <filter-name>loginFilter</filter-name>
+        <!--拦截所有请求-->
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
 
 </web-app>
