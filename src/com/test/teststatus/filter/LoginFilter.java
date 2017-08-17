@@ -1,8 +1,13 @@
 package com.test.teststatus.filter;
 
 
+import org.apache.http.HttpStatus;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.util.EntityUtils;
 import org.apache.log4j.Logger;
-import org.apache.log4j.spi.LoggerFactory;
+import net.sf.json.JSONObject;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
@@ -40,18 +45,30 @@ public class LoginFilter implements Filter {
      */
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
-        // 获取ServletContext 对象，用于记录日志
-        ServletContext context = this.filterConfig.getServletContext();
         // 将请求转换成HttpServletRequest 请求
         HttpServletRequest hreq = (HttpServletRequest)servletRequest;
         HttpServletResponse hrsp = (HttpServletResponse) servletResponse;
 
-        HttpSession session = hreq.getSession(false);
+        HttpSession session = hreq.getSession(true);
         if(session == null || session.getAttribute("user") == null){
-            // 没有登录, 重定向到登录页面  http://localhost:8082/singlesign/
-            String uri = hreq.getRequestURI();
+            String token = hreq.getParameter("token");
+            if( token!= null){
+                // 如果有token, 则说明是由认证中心返回的, 再去验证一下这个token是否为真正的
+                String result = testGet("http://localhost:8086/singlesign/login/check_token?token="+token);
+                JSONObject json = JSONObject.fromObject(result);
+                boolean index = json.getBoolean("data");
+                if(index){
+                    // token有效, 创建用户session
+                    session.setAttribute("user", token);
+                    filterChain.doFilter(servletRequest,servletResponse);
+                    return;
+                }
+            }
+            // 没有登录, 重定向到登录页面  http://localhost:8082/singlesign/   http://localhost:8086/singlesign/
+            String uri = hreq.getRequestURL().toString();
 
-            hrsp.sendRedirect("http://www.baidu.com");
+            // 带着本次请求的url, 跳转到认证中心去
+            hrsp.sendRedirect("http://localhost:8086/singlesign/login/to_index?url="+uri);
             return;
         }else {
             // 登录了, 继续后面的请求
@@ -66,5 +83,29 @@ public class LoginFilter implements Filter {
     @Override
     public void destroy() {
 
+    }
+
+    /**
+     * get请求
+     */
+    private static String testGet(String url) {
+        String result = "";
+        try {
+            // 根据地址获取请求
+            HttpGet request = new HttpGet(url);//这里发送get请求
+            // 获取当前客户端对象
+            HttpClient httpClient = new DefaultHttpClient();
+            // 通过请求对象获取响应对象
+            org.apache.http.HttpResponse response = httpClient.execute(request);
+
+            // 判断网络连接状态码是否正常(0--200都数正常)
+            if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
+                result = EntityUtils.toString(response.getEntity(), "utf-8");
+            }
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return result;
     }
 }
