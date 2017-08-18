@@ -1,19 +1,20 @@
 package com.test.teststatus.filter;
 
 
+import net.sf.json.JSONObject;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
 import org.apache.log4j.Logger;
-import net.sf.json.JSONObject;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.util.Map;
 
 /**
  *   filter能够在一个请求到达servlet之前预处理用户请求，也可以在离开servlet时处理http响应：
@@ -65,10 +66,16 @@ public class LoginFilter implements Filter {
                 }
             }
             // 没有登录, 重定向到登录页面  http://localhost:8082/singlesign/   http://localhost:8086/singlesign/
-            String uri = hreq.getRequestURL().toString();
+            String url = hreq.getRequestURL().toString()+"?";
+
+            Map<String ,Object> map = hreq.getParameterMap();
+            for (Map.Entry<String , Object> entry:map.entrySet()) {
+                url += entry.getKey()+"="+((String[])entry.getValue())[0]+"&";
+            }
+            url = url.substring(0, url.length()-1);
 
             // 带着本次请求的url, 跳转到认证中心去
-            hrsp.sendRedirect("http://localhost:8086/singlesign/login/to_index?url="+uri);
+            hrsp.sendRedirect("http://localhost:8086/singlesign/login/to_index?url="+url);
             return;
         }else {
             // 登录了, 继续后面的请求
