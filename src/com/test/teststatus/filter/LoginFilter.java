@@ -46,12 +46,21 @@ public class LoginFilter implements Filter {
      */
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
+
+
         // 将请求转换成HttpServletRequest 请求
         HttpServletRequest hreq = (HttpServletRequest)servletRequest;
         HttpServletResponse hrsp = (HttpServletResponse) servletResponse;
 
+        String uri = hreq.getRequestURL().toString();
+        if(uri.contains("logout") || uri.contains("cancelSession")){
+            // 退出登录方法, 这时不再拦截
+            filterChain.doFilter(servletRequest,servletResponse);
+            return;
+        }
+
         HttpSession session = hreq.getSession(true);
-        if(session == null || session.getAttribute("user") == null){
+        if(session.getAttribute("user") == null){
             String token = hreq.getParameter("token");
             if( token!= null){
                 // 如果有token, 则说明是由认证中心返回的, 再去验证一下这个token是否为真正的
