@@ -70,6 +70,9 @@ public class LoginFilter implements Filter {
                 if(index){
                     // token有效, 创建用户session
                     session.setAttribute("user", token);
+                    // 把session统一管理
+                    SessionFilter.addSession(session);
+
                     filterChain.doFilter(servletRequest,servletResponse);
                     return;
                 }
